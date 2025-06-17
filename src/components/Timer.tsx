@@ -12,6 +12,7 @@ const Timer = () => {
   const [minutes, setMinutes] = useState("00");
   const [seconds, setSeconds] = useState("00");
   const [totalSeconds, setTotalSeconds] = useState(0);
+  const storedTotalSeconds = useRef(totalSeconds);
 
   const inputValue = useRef("");
   const countdownRef = useRef<NodeJS.Timeout | null>(null);
@@ -72,6 +73,7 @@ const Timer = () => {
     }
     setError("");
     setTotalSeconds(secondsTotal);
+    storedTotalSeconds.current = secondsTotal;
     setStatus({ isStart: true, isPause: false });
 
     if (countdownRef.current) clearInterval(countdownRef.current);
@@ -97,12 +99,8 @@ const Timer = () => {
   };
 
   const handleRestartTimer = () => {
-    if (totalSeconds > 0 && status.isPause) {
-      setStatus({ isStart: true, isPause: false });
-      countdownRef.current = setInterval(() => {
-        setTotalSeconds((prev) => prev - 1);
-      }, 1000);
-    }
+    setTotalSeconds(storedTotalSeconds.current);
+    handleStartTimer();
   };
 
   return (
