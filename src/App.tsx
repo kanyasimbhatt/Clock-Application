@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { lazy } from "react";
+import Home from "./components/Home";
 
 function App() {
-  const Home = lazy(() => import("./components/Home"));
   const StopWatch = lazy(() => import("./components/StopWatch"));
   const Timer = lazy(() => import("./components/Timer"));
   return (
