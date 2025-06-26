@@ -1,9 +1,10 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./components/Home";
-import StopWatch from "./components/StopWatch";
-import Timer from "./components/Timer";
+import { lazy } from "react";
 
 function App() {
+  const Home = lazy(() => import("./components/Home"));
+  const StopWatch = lazy(() => import("./components/StopWatch"));
+  const Timer = lazy(() => import("./components/Timer"));
   return (
     <Router>
       <Routes>
