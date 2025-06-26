@@ -13,10 +13,10 @@ const Timer = () => {
   const [disableStart, setDisableStart] = useState(false);
   const navigate = useNavigate();
 
-  const hourRef = useRef<NodeJS.Timeout>(null);
-  const minuteRef = useRef<NodeJS.Timeout>(null);
-  const secondRef = useRef<NodeJS.Timeout>(null);
-  const millisecondRef = useRef<NodeJS.Timeout>(null);
+  const hourRef = useRef<number>(null);
+  const minuteRef = useRef<number>(null);
+  const secondRef = useRef<number>(null);
+  const millisecondRef = useRef<number>(null);
 
   const handleStartCounter = () => {
     setDisableStart(true);

@@ -15,7 +15,7 @@ const Timer = () => {
   const storedTotalSeconds = useRef(totalSeconds);
 
   const inputValue = useRef("");
-  const countdownRef = useRef<NodeJS.Timeout | null>(null);
+  const countdownRef = useRef<number | null>(null);
 
   const sharedProps: OTPProps = {
     onChange: (value: string) => {
