@@ -5,6 +5,7 @@ import alarmSound from "../assets/mixkit-digital-clock-digital-alarm-buzzer-992.
 import { useRef, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import ModalContent from "./ModalContent";
+import { useNavigate } from "react-router-dom";
 
 type OTPProps = GetProps<typeof Input.OTP>;
 
@@ -20,6 +21,7 @@ const Timer = () => {
   const [seconds, setSeconds] = useState("00");
   const [totalSeconds, setTotalSeconds] = useState(0);
   const storedTotalSeconds = useRef(totalSeconds);
+  const navigate = useNavigate();
 
   const inputValue = useRef("");
   const countdownRef = useRef<NodeJS.Timeout | null>(null);
@@ -37,19 +39,6 @@ const Timer = () => {
       }
     },
   };
-
-  useEffect(() => {
-    const hrs = Math.floor(totalSeconds / 3600);
-    const mins = Math.floor((totalSeconds % 3600) / 60);
-    const secs = totalSeconds % 60;
-    setHours(hrs.toString().padStart(2, "0"));
-    setMinutes(mins.toString().padStart(2, "0"));
-    setSeconds(secs.toString().padStart(2, "0"));
-    if (totalSeconds === 0 && status.isStart) {
-      clearInterval(countdownRef.current!);
-      setStatus({ isStart: false, isPause: false });
-    }
-  }, [totalSeconds, status.isStart]);
 
   const formatterFunc = (str: string) => {
     if (str.includes("0")) return str;
@@ -116,6 +105,24 @@ const Timer = () => {
     stop();
     handleStartTimer();
   };
+
+  const handleGoBack = () => {
+    if (countdownRef.current) clearInterval(countdownRef.current);
+    navigate("/");
+  };
+
+  useEffect(() => {
+    const hrs = Math.floor(totalSeconds / 3600);
+    const mins = Math.floor((totalSeconds % 3600) / 60);
+    const secs = totalSeconds % 60;
+    setHours(hrs.toString().padStart(2, "0"));
+    setMinutes(mins.toString().padStart(2, "0"));
+    setSeconds(secs.toString().padStart(2, "0"));
+    if (totalSeconds === 0 && status.isStart) {
+      clearInterval(countdownRef.current!);
+      setStatus({ isStart: false, isPause: false });
+    }
+  }, [totalSeconds, status.isStart]);
 
   useEffect(() => {
     if (totalSeconds === 0 && status.isStart) {
@@ -195,6 +202,14 @@ const Timer = () => {
             Restart
           </Button>
         </Space>
+        <Button
+          type="default"
+          color="purple"
+          variant="filled"
+          onClick={handleGoBack}
+        >
+          Go Back
+        </Button>
       </Flex>
       {showModal &&
         createPortal(

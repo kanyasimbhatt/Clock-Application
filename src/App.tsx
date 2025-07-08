@@ -1,16 +1,37 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { lazy } from "react";
-import Home from "./components/Home";
+import { lazy, Suspense } from "react";
 
 function App() {
   const StopWatch = lazy(() => import("./components/StopWatch"));
   const Timer = lazy(() => import("./components/Timer"));
+  const Home = lazy(() => import("./components/Home"));
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/stop-watch" element={<StopWatch />} />
-        <Route path="/count-down" element={<Timer />} />
+        <Route
+          path="/"
+          element={
+            <Suspense>
+              <Home />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/stop-watch"
+          element={
+            <Suspense>
+              <StopWatch />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/count-down"
+          element={
+            <Suspense>
+              <Timer />
+            </Suspense>
+          }
+        />
       </Routes>
     </Router>
   );
