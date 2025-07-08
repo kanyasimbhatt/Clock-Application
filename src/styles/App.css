@@ -1,3 +1,13 @@
+body {
+  width: 100%;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .home-wrapper {
   display: flex;
   height: 100vh;
@@ -14,9 +24,10 @@
 
 .text-wrapper {
   background-color: rgba(128, 0, 128, 0.253);
-  padding-left: 20px;
-  padding-right: 20px;
+  width: 80px;
   border-radius: 4px;
+  display: flex;
+  justify-content: center;
 }
 
 .stop-watch-wrapper {
@@ -25,4 +36,28 @@
   width: 100%;
   justify-content: center;
   align-items: center;
+}
+
+.timer-label-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.timer-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+.modal {
+  position: fixed;
+  height: 300px;
+  width: 600px;
+  background-color: rgb(169, 161, 238);
+  border-radius: 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+  justify-content: center;
 }

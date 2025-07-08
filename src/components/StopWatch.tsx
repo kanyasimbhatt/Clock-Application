@@ -13,10 +13,10 @@ const Timer = () => {
   const [disableStart, setDisableStart] = useState(false);
   const navigate = useNavigate();
 
-  const hourRef = useRef<number>(null);
-  const minuteRef = useRef<number>(null);
-  const secondRef = useRef<number>(null);
-  const millisecondRef = useRef<number>(null);
+  const hourRef = useRef<NodeJS.Timeout>(null);
+  const minuteRef = useRef<NodeJS.Timeout>(null);
+  const secondRef = useRef<NodeJS.Timeout>(null);
+  const millisecondRef = useRef<NodeJS.Timeout>(null);
 
   const handleStartCounter = () => {
     setDisableStart(true);
@@ -47,7 +47,7 @@ const Timer = () => {
 
     millisecondRef.current = setInterval(() => {
       setMilliseconds((milliseconds) => {
-        if (+milliseconds >= 98) return `00`;
+        if (+milliseconds >= 99) return `00`;
         else {
           if (+milliseconds >= 9) return `${+milliseconds + 1}`;
           return `0${+milliseconds + 1}`;
@@ -68,6 +68,15 @@ const Timer = () => {
   const handleGoBack = () => {
     handleStopCounter();
     navigate("/");
+  };
+
+  const handleRestart = () => {
+    handleStopCounter();
+    setHours("00");
+    setMinutes("00");
+    setSeconds("00");
+    setMilliseconds("00");
+    handleStartCounter();
   };
 
   return (
@@ -110,8 +119,17 @@ const Timer = () => {
             onClick={handleStopCounter}
             disabled={!disableStart}
           >
-            Stop
+            Pause
           </Button>
+          <Button
+            type="default"
+            color="purple"
+            variant="filled"
+            value={"large"}
+            onClick={handleRestart}
+          >
+            Restart
+          </Button> 
         </Space>
         <Button
           type="default"

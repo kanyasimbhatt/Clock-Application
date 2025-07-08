@@ -1,13 +1,20 @@
 import { Flex, Input, type GetProps, Typography, Button, Space } from "antd";
+import useSound from "use-sound";
 import "./../styles/App.css";
+import alarmSound from "../assets/mixkit-digital-clock-digital-alarm-buzzer-992.mp3";
 import { useRef, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import ModalContent from "./ModalContent";
 
 type OTPProps = GetProps<typeof Input.OTP>;
+
 const { Title, Paragraph } = Typography;
 
 const Timer = () => {
   const [status, setStatus] = useState({ isStart: false, isPause: false });
   const [error, setError] = useState("");
+  const [play, { stop }] = useSound(alarmSound);
+  const [showModal, setShowModal] = useState(false);
   const [hours, setHours] = useState("00");
   const [minutes, setMinutes] = useState("00");
   const [seconds, setSeconds] = useState("00");
@@ -15,7 +22,7 @@ const Timer = () => {
   const storedTotalSeconds = useRef(totalSeconds);
 
   const inputValue = useRef("");
-  const countdownRef = useRef<number | null>(null);
+  const countdownRef = useRef<NodeJS.Timeout | null>(null);
 
   const sharedProps: OTPProps = {
     onChange: (value: string) => {
@@ -84,6 +91,7 @@ const Timer = () => {
 
   const handlePauseTimer = () => {
     setStatus({ isStart: false, isPause: true });
+    inputValue.current = `${hours}${minutes}${seconds}`;
     if (countdownRef.current) clearInterval(countdownRef.current);
   };
 
@@ -103,25 +111,54 @@ const Timer = () => {
     handleStartTimer();
   };
 
+  const handleRepeat = () => {
+    setShowModal(false);
+    stop();
+    handleStartTimer();
+  };
+
+  useEffect(() => {
+    if (totalSeconds === 0 && status.isStart) {
+      play();
+      setShowModal(true);
+    }
+  }, [totalSeconds]);
+
   return (
     <div className="stop-watch-wrapper">
-      <Flex gap={"middle"} vertical className="content-wrapper">
-        <Title level={5}>Count Down</Title>
+      <Flex gap={"large"} vertical className="content-wrapper">
+        <Title>Count Down</Title>
+        <div>
+          <div className="timer-label-wrapper">
+            <div className="timer-wrapper">
+              <Paragraph>H</Paragraph>
+              <Paragraph>H</Paragraph>
+            </div>
+            <Paragraph>:</Paragraph>
+            <div className="timer-wrapper">
+              <Paragraph>M</Paragraph>
+              <Paragraph>M</Paragraph>
+            </div>
+            <Paragraph>:</Paragraph>
+            <div className="timer-wrapper">
+              <Paragraph>S</Paragraph>
+              <Paragraph>S</Paragraph>
+            </div>
+          </div>
+          <Input.OTP
+            value={
+              status.isStart || status.isPause
+                ? `${hours}${minutes}${seconds}`
+                : ""
+            }
+            length={6}
+            formatter={formatterFunc}
+            {...sharedProps}
+            disabled={status.isStart || status.isPause}
+          />
 
-        <Input.OTP
-          value={
-            status.isStart || status.isPause
-              ? `${hours}${minutes}${seconds}`
-              : ""
-          }
-          length={6}
-          formatter={formatterFunc}
-          {...sharedProps}
-          disabled={status.isStart || status.isPause}
-        />
-
-        {error && <Paragraph type="danger">{error}</Paragraph>}
-
+          {error && <Paragraph type="danger">{error}</Paragraph>}
+        </div>
         <Space size="large">
           <Button
             type="default"
@@ -159,6 +196,15 @@ const Timer = () => {
           </Button>
         </Space>
       </Flex>
+      {showModal &&
+        createPortal(
+          <ModalContent
+            onClose={() => setShowModal(false)}
+            stopAlarm={stop}
+            handleRepeat={handleRepeat}
+          />,
+          document.body
+        )}
     </div>
   );
 };
